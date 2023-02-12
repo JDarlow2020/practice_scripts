@@ -9,7 +9,7 @@ import sys
 import math
 import matplotlib.pyplot as plt
 import argparse
-parser = argparse.ArgumentParser(description = "Practice K-Nearest-Neighbour supervised learning algorithm for categorising a point into one of two groups in a scatter plot", epilog = "Please see GitHub Link")
+parser = argparse.ArgumentParser(description = "Practice K-Nearest-Neighbour supervised learning algorithm for categorising a point into one of two groups in a scatter plot. If no groups are provided as input, test groups are provided as default.", epilog = "Please see GitHub Link")
 parser.add_argument("-g1","--group1",metavar="",type=list,help="Scatter plot coordinates for group 1")
 parser.add_argument("-g2","--group2",metavar="",type=list,help="Scatter plot coordinates for group 2")
 parser.add_argument("-x","--xpoint",metavar="",type=int,help="Scatter plot x coordinate for a point to categorise", required=True)
@@ -23,6 +23,8 @@ a = [parser.xpoint,parser.ypoint]
 if not parser.group1 and not parser.group2:
     points = {0:[(1,12),(2,5),(3,6),(3,10),(3.5,8),(2,11),(2,9),(1,7)],
             1:[(5,3),(3,2),(1.5,9),(7,2),(6,1),(3.8,1),(5.6,4),(4,2),(2,5)]}
+#else:
+#    define points variable
 
 def plot_figure(points, point=False):
     '''
@@ -58,21 +60,21 @@ def classifyAPoint(points,p,k=parser.k_nearest):
         p - a list or tuple test data point e.g. (x,y)
         k - the number of nearest neighbours to consider, default is 3
     '''
+    if parser.k_nearest % 2 == 0:
+        print("Warning - using an even number of nearest neighbours is not advised as it can result in uncategorised output")
     plot_figure(points, p)
     distance={}
     for group in points:
         for feature in points[group]:
 
-            #calculate the euclidean distance of p from training points
+            #calculate the euclidean distance of p from points in groups, add to distance dictionary
             euclidean_distance = math.sqrt((feature[0]-p[0])**2 +(feature[1]-p[1])**2)
-
-            # Add a tuple of form (distance,group) in the distance list
             distance[str(euclidean_distance)] = ((feature,euclidean_distance,group))
 
-    # sort the distance list in ascending order
-    # and select first k distances
-    dist_list = list(distance.keys())
+    # sort the distance list in ascending order and select first k distances
+    dist_list = [float(i) for i in distance.keys()]
     dist_list.sort()
+    dist_list = [str(i) for i in dist_list]
     distance = {i: distance[i] for i in dist_list}
     dist_list = list(distance.keys())[:k]
     distance = {i: distance[i] for i in dist_list}
@@ -82,7 +84,7 @@ def classifyAPoint(points,p,k=parser.k_nearest):
         print(f"Nearest {k} neighbours to point {p}:")
     for d in distance.keys():
         if not parser.quiet:
-            print(f"Coordinates: {distance[d][0]} Distance: {distance[d][1]} Group: {distance[d][-1]}")
+            print(f"Coordinates: {distance[d][0]}\tDistance: {distance[d][1]}\tGroup: {distance[d][-1]}")
         if distance[d][-1] == 0:
             freq1 += 1
         elif distance[d][-1] == 1:
@@ -96,19 +98,10 @@ def classifyAPoint(points,p,k=parser.k_nearest):
 
 # driver function
 def main():
-
     # Dictionary of training points having two keys - 0 and 1
     # key 0 have points belong to class 0
     # key 1 have points belong to class 1
-
-    points = {0:[(1,12),(2,5),(3,6),(3,10),(3.5,8),(2,11),(2,9),(1,7)],
-            1:[(5,3),(3,2),(1.5,9),(7,2),(6,1),(3.8,1),(5.6,4),(4,2),(2,5)]}
-    # if parser.xpoint and parser.ypoint:
-    #   a = [parser.xpoint,parser.ypoint]
     print(f"The group classified to unknown point is: {classifyAPoint(points,a,parser.k_nearest)+1}")
-    # else:
-    #   print("X and Y coordinate for point requried, please use -xpoint and -xypoint arguments")
-    #   sys.exit()
 
 if __name__ == '__main__':
     main()
