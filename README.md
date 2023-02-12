@@ -1,2 +1,2 @@
 # Practice Scripts
-Scripts written by Jacob Darlow for personal projects and coding practice.
+Scripts written by JDarlow2020 for personal projects and coding practice.
