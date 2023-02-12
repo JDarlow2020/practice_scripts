@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Python3 script to find group of an unknown point using K-Nearest-Neighbour algorithm
-# test  arguments
+# test arguments
 #p = (2,5) # returns -1 (neither) with k = 4
 #p = (2,8) # returns 0 (group 1)
 #p = (5,2) # returns 1 (group 2)
@@ -96,11 +96,8 @@ def classifyAPoint(points,p,k=parser.k_nearest):
     else:
         return -1
 
-# driver function
 def main():
-    # Dictionary of training points having two keys - 0 and 1
-    # key 0 have points belong to class 0
-    # key 1 have points belong to class 1
+    # Dictionary of training points having two keys - 0 (group 1) and 1 (group 2)
     print(f"The group classified to unknown point is: {classifyAPoint(points,a,parser.k_nearest)+1}")
 
 if __name__ == '__main__':
